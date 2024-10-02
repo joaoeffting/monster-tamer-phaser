@@ -4,7 +4,7 @@ import { SCENE_KEYS } from "./scene-keys.js";
 
 export class PreloadScene extends Phaser.Scene {
   constructor() {
-    super({ key: SCENE_KEYS.PRELOAD_SCENE, active: true });
+    super({ key: SCENE_KEYS.PRELOAD_SCENE });
   }
 
   init() {
@@ -25,9 +25,7 @@ export class PreloadScene extends Phaser.Scene {
   }
 
   create() {
-    
-
-    this.add.image(this.scale.width / 2, this.scale.height / 2, PRELOAD_SCENE_ASSETS_KEYS.FOREST);
+    this.scene.start(SCENE_KEYS.BATTLE_SCENE);
   }
 
   update() {
