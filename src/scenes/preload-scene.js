@@ -27,7 +27,7 @@ export class PreloadScene extends Phaser.Scene {
   create() {
     
 
-    this.add.image(0, 0, PRELOAD_SCENE_ASSETS_KEYS.FOREST).setOrigin(0)
+    this.add.image(this.scale.width / 2, this.scale.height / 2, PRELOAD_SCENE_ASSETS_KEYS.FOREST);
   }
 
   update() {
