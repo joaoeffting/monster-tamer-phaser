@@ -1,23 +1,35 @@
-import { PRELOAD_SCENE_ASSETS_KEYS, MONSTER_ASSET_KEYS, BATTLE_ASSET_KEYS, HEALTH_BAR_ASSET_KEYS } from "../assets/asset-keys.js";
+import {
+  PRELOAD_SCENE_ASSETS_KEYS,
+  MONSTER_ASSET_KEYS,
+  BATTLE_ASSET_KEYS,
+  HEALTH_BAR_ASSET_KEYS,
+} from "../assets/asset-keys.js";
 import Phaser from "../lib/phaser.js";
 import { SCENE_KEYS } from "./scene-keys.js";
+
+const BATTLE_MENU_OPTIONS = Object.freeze({
+  FIGHT: "FIGHT",
+  SWITCH: "SWITCH",
+  ITEM: "ITEM",
+  FLEE: "FLEEE",
+});
 
 export class BattleScene extends Phaser.Scene {
   constructor() {
     super({ key: SCENE_KEYS.BATTLE_SCENE });
   }
 
-  init() {
+  init() {}
 
-  }
-
-  preload() {
-    
-  }
+  preload() {}
 
   create() {
     // create the background
-    this.add.image(this.scale.width / 2, this.scale.height / 2, PRELOAD_SCENE_ASSETS_KEYS.FOREST);
+    this.add.image(
+      this.scale.width / 2,
+      this.scale.height / 2,
+      PRELOAD_SCENE_ASSETS_KEYS.FOREST
+    );
 
     // create player and enemy monsters
     this.add.image(768, 144, MONSTER_ASSET_KEYS.CARNODUSK, 0);
@@ -26,69 +38,181 @@ export class BattleScene extends Phaser.Scene {
     // player helthbar
     this.#createPlayerMonsterContainer();
     this.#createEnemyMonsterContainer();
+
+    this.#createMainInfoPanel();
+    const subpanel = this.#createMainInfoSubPanel();
+    this.add.container(520, 448, [
+      subpanel,
+      ...this.#createeMainInfoSubPanelMenu(),
+    ]);
+
+    this.add.container(0, 448, [...this.#createMainInfoPanelMenu()]);
   }
 
-  update() {
-
-  }
+  update() {}
 
   #createPlayerMonsterContainer() {
-    const playerMonsterName = this.#createMonsterName(MONSTER_ASSET_KEYS.IGUANIGNITE);
-    const playerMonsterLevel = this.#createMonsterLevelText(playerMonsterName.width + 35, 23)
-    const containerBackground = this.add.image(0, 0, BATTLE_ASSET_KEYS.HEALTH_BAR_BACKGROUND).setOrigin(0);
+    const playerMonsterName = this.#createMonsterName(
+      MONSTER_ASSET_KEYS.IGUANIGNITE
+    );
+    const playerMonsterLevel = this.#createMonsterLevelText(
+      playerMonsterName.width + 35,
+      23
+    );
+    const containerBackground = this.add
+      .image(0, 0, BATTLE_ASSET_KEYS.HEALTH_BAR_BACKGROUND)
+      .setOrigin(0);
     const hpText = this.#createHPText();
     const playerMonsterHPValue = this.#createHPValue();
 
-    this.add.container(556, 318, [containerBackground, playerMonsterName, this.#createHealthbar(34, 34), playerMonsterLevel, hpText, playerMonsterHPValue]);
+    this.add.container(556, 318, [
+      containerBackground,
+      playerMonsterName,
+      this.#createHealthbar(34, 34),
+      playerMonsterLevel,
+      hpText,
+      playerMonsterHPValue,
+    ]);
   }
 
   #createEnemyMonsterContainer() {
-    const enemyMonsterName = this.#createMonsterName(MONSTER_ASSET_KEYS.CARNODUSK);
-    const enemyMonsterLevel = this.#createMonsterLevelText(enemyMonsterName.width + 35, 23)
-    const containerBackground = this.add.image(0, 0, BATTLE_ASSET_KEYS.HEALTH_BAR_BACKGROUND).setOrigin(0);
+    const enemyMonsterName = this.#createMonsterName(
+      MONSTER_ASSET_KEYS.CARNODUSK
+    );
+    const enemyMonsterLevel = this.#createMonsterLevelText(
+      enemyMonsterName.width + 35,
+      23
+    );
+    const containerBackground = this.add
+      .image(0, 0, BATTLE_ASSET_KEYS.HEALTH_BAR_BACKGROUND)
+      .setOrigin(0);
     const hpText = this.#createHPText();
     const enemyMonsterHPValue = this.#createHPValue();
 
-    this.add.container(5, 10, [containerBackground, enemyMonsterName, this.#createHealthbar(34, 34), enemyMonsterLevel, hpText, enemyMonsterHPValue]);
+    this.add.container(5, 10, [
+      containerBackground,
+      enemyMonsterName,
+      this.#createHealthbar(34, 34),
+      enemyMonsterLevel,
+      hpText,
+      enemyMonsterHPValue,
+    ]);
   }
-  
 
   #createHPValue() {
-    return this.add.text(443,80, "25/25", {
-      color: '#7E3D3F',
-      fontSize: '16px',
-
-    }).setOrigin(1, 0);
+    return this.add
+      .text(443, 80, "25/25", {
+        color: "#7E3D3F",
+        fontSize: "16px",
+      })
+      .setOrigin(1, 0);
   }
 
   #createHPText() {
-    return this.add.text(30,55, "HP", {
-      color: '#FF6505',
-      fontSize: '24px',
-      fontStyle: 'italic'
+    return this.add.text(30, 55, "HP", {
+      color: "#FF6505",
+      fontSize: "24px",
+      fontStyle: "italic",
     });
   }
 
   #createMonsterLevelText(x, y) {
     return this.add.text(x, y, "LVL", {
-      color: '#ED474B',
-      fontSize: '28px'
+      color: "#ED474B",
+      fontSize: "28px",
     });
   }
 
   #createMonsterName(monsterName) {
     return this.add.text(30, 20, monsterName, {
-      color: '#7E3D3F',
-      fontSize: '32px'
+      color: "#7E3D3F",
+      fontSize: "32px",
     });
   }
 
   #createHealthbar(x, y) {
     const scale = 0.7;
-    const leftCap = this.add.image(x, y, HEALTH_BAR_ASSET_KEYS.LEFT_CAP).setOrigin(0, 0.5).setScale(1, scale);
-    const middle = this.add.image(leftCap.x + leftCap.width, y, HEALTH_BAR_ASSET_KEYS.MIDDLE).setOrigin(0, 0.5).setScale(1, scale);
+    const leftCap = this.add
+      .image(x, y, HEALTH_BAR_ASSET_KEYS.LEFT_CAP)
+      .setOrigin(0, 0.5)
+      .setScale(1, scale);
+    const middle = this.add
+      .image(leftCap.x + leftCap.width, y, HEALTH_BAR_ASSET_KEYS.MIDDLE)
+      .setOrigin(0, 0.5)
+      .setScale(1, scale);
     middle.displayWidth = 360;
-    const rightCap = this.add.image(middle.x + middle.displayWidth, y, HEALTH_BAR_ASSET_KEYS.RIGHT_CAP).setOrigin(0, 0.5).setScale(1, scale);
+    const rightCap = this.add
+      .image(middle.x + middle.displayWidth, y, HEALTH_BAR_ASSET_KEYS.RIGHT_CAP)
+      .setOrigin(0, 0.5)
+      .setScale(1, scale);
     return this.add.container(x, y, [leftCap, middle, rightCap]);
+  }
+
+  #createMainInfoPanel() {
+    const padding = 4;
+    const rectangleHeight = 124;
+    return this.add
+      .rectangle(
+        padding,
+        this.scale.height - rectangleHeight - padding,
+        this.scale.width - padding * 2,
+        rectangleHeight,
+        0xede4f3,
+        1
+      )
+      .setOrigin(0)
+      .setStrokeStyle(8, 0xe44348, 1);
+  }
+
+  #createMainInfoSubPanel() {
+    const padding = 4;
+    const rectangleWidth = 500;
+    const rectangleHeight = 124;
+    return this.add
+      .rectangle(0, 0, rectangleWidth, rectangleHeight, 0xede4f3, 1)
+      .setOrigin(0)
+      .setStrokeStyle(8, 0x905ac2, 1);
+  }
+
+  #createeMainInfoSubPanelMenu() {
+    return [
+      this.add.text(55, 22, BATTLE_MENU_OPTIONS.FIGHT, {
+        color: "black",
+        fontSize: "30px",
+      }),
+      this.add.text(240, 22, BATTLE_MENU_OPTIONS.SWITCH, {
+        color: "black",
+        fontSize: "30px",
+      }),
+      this.add.text(55, 70, BATTLE_MENU_OPTIONS.ITEM, {
+        color: "black",
+        fontSize: "30px",
+      }),
+      this.add.text(240, 70, BATTLE_MENU_OPTIONS.FLEE, {
+        color: "black",
+        fontSize: "30px",
+      }),
+    ];
+  }
+
+  #createMainInfoPanelMenu() {
+    return [
+      this.add.text(55, 22, "slash", {
+        color: "black",
+        fontSize: "30px",
+      }),
+      this.add.text(240, 22, "growl", {
+        color: "black",
+        fontSize: "30px",
+      }),
+      this.add.text(55, 70, "-", {
+        color: "black",
+        fontSize: "30px",
+      }),
+      this.add.text(240, 70, "-", {
+        color: "black",
+        fontSize: "30px",
+      }),
+    ];
   }
 }
