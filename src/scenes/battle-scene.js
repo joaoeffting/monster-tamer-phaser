@@ -4,17 +4,12 @@ import {
   BATTLE_ASSET_KEYS,
   HEALTH_BAR_ASSET_KEYS,
 } from "../assets/asset-keys.js";
+import { BattleMenu } from "../battle/ui/menu/battle-menu.js";
 import Phaser from "../lib/phaser.js";
 import { SCENE_KEYS } from "./scene-keys.js";
 
-const BATTLE_MENU_OPTIONS = Object.freeze({
-  FIGHT: "FIGHT",
-  SWITCH: "SWITCH",
-  ITEM: "ITEM",
-  FLEE: "FLEEE",
-});
-
 export class BattleScene extends Phaser.Scene {
+  #battleMenu;
   constructor() {
     super({ key: SCENE_KEYS.BATTLE_SCENE });
   }
@@ -39,14 +34,8 @@ export class BattleScene extends Phaser.Scene {
     this.#createPlayerMonsterContainer();
     this.#createEnemyMonsterContainer();
 
-    this.#createMainInfoPanel();
-    const subpanel = this.#createMainInfoSubPanel();
-    this.add.container(520, 448, [
-      subpanel,
-      ...this.#createeMainInfoSubPanelMenu(),
-    ]);
-
-    this.add.container(0, 448, [...this.#createMainInfoPanelMenu()]);
+    this.#battleMenu = new BattleMenu(this);
+    this.#battleMenu.showMainBattleMenu();
   }
 
   update() {}
@@ -146,73 +135,5 @@ export class BattleScene extends Phaser.Scene {
       .setOrigin(0, 0.5)
       .setScale(1, scale);
     return this.add.container(x, y, [leftCap, middle, rightCap]);
-  }
-
-  #createMainInfoPanel() {
-    const padding = 4;
-    const rectangleHeight = 124;
-    return this.add
-      .rectangle(
-        padding,
-        this.scale.height - rectangleHeight - padding,
-        this.scale.width - padding * 2,
-        rectangleHeight,
-        0xede4f3,
-        1
-      )
-      .setOrigin(0)
-      .setStrokeStyle(8, 0xe44348, 1);
-  }
-
-  #createMainInfoSubPanel() {
-    const padding = 4;
-    const rectangleWidth = 500;
-    const rectangleHeight = 124;
-    return this.add
-      .rectangle(0, 0, rectangleWidth, rectangleHeight, 0xede4f3, 1)
-      .setOrigin(0)
-      .setStrokeStyle(8, 0x905ac2, 1);
-  }
-
-  #createeMainInfoSubPanelMenu() {
-    return [
-      this.add.text(55, 22, BATTLE_MENU_OPTIONS.FIGHT, {
-        color: "black",
-        fontSize: "30px",
-      }),
-      this.add.text(240, 22, BATTLE_MENU_OPTIONS.SWITCH, {
-        color: "black",
-        fontSize: "30px",
-      }),
-      this.add.text(55, 70, BATTLE_MENU_OPTIONS.ITEM, {
-        color: "black",
-        fontSize: "30px",
-      }),
-      this.add.text(240, 70, BATTLE_MENU_OPTIONS.FLEE, {
-        color: "black",
-        fontSize: "30px",
-      }),
-    ];
-  }
-
-  #createMainInfoPanelMenu() {
-    return [
-      this.add.text(55, 22, "slash", {
-        color: "black",
-        fontSize: "30px",
-      }),
-      this.add.text(240, 22, "growl", {
-        color: "black",
-        fontSize: "30px",
-      }),
-      this.add.text(55, 70, "-", {
-        color: "black",
-        fontSize: "30px",
-      }),
-      this.add.text(240, 70, "-", {
-        color: "black",
-        fontSize: "30px",
-      }),
-    ];
   }
 }
